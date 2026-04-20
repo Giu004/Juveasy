@@ -59,7 +59,16 @@ if [ "$ENABLE_WARP" = "true" ]; then
         warp-cli --accept-tos connect
         
         # Small delay for connection to stabilize
-        sleep 3
+        echo "⏳ Waiting for WARP to stabilize (10s)..."
+        sleep 10
+        
+        # Check if SOCKS5 proxy is actually listening
+        if nc -z 127.0.0.1 1080; then
+            echo "✅ WARP SOCKS5 proxy is listening on port 1080."
+        else
+            echo "⚠️ WARP SOCKS5 proxy not detected yet, but proceeding..."
+        fi
+        
         warp-cli --accept-tos status
     fi
 fi
@@ -68,8 +77,9 @@ fi
 PROXY_VARS=""
 if [ "$ENABLE_WARP" = "true" ]; then
     # We use socks5h:// to ensure remote DNS resolution for sub-processes
-    PROXY_VARS="HTTP_PROXY=socks5h://127.0.0.1:1080 HTTPS_PROXY=socks5h://127.0.0.1:1080 ALL_PROXY=socks5h://127.0.0.1:1080"
-    echo "🌐 FlareSolverr/Byparr will use WARP proxy..."
+    # We add NO_PROXY to ensure local communication (e.g. FlareSolverr -> chromedriver) doesn't use the proxy
+    PROXY_VARS="HTTP_PROXY=socks5h://127.0.0.1:1080 HTTPS_PROXY=socks5h://127.0.0.1:1080 ALL_PROXY=socks5h://127.0.0.1:1080 NO_PROXY=localhost,127.0.0.1 no_proxy=localhost,127.0.0.1"
+    echo "🌐 FlareSolverr/Byparr will use WARP proxy (excluding local traffic)..."
 fi
 
 # Start FlareSolverr in the background

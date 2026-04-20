@@ -369,9 +369,9 @@ class HLSProxy:
                     if resp.status == 200:
                         text = await resp.text()
                         if "warp=on" in text:
-                            self.warp_status = "Connected (SOCKS5)"
+                            self.warp_status = "Connected"
                         else:
-                            self.warp_status = "Disconnected (Proxy Mode)"
+                            self.warp_status = "Disconnected"
                     else:
                         self.warp_status = "Error"
             except Exception:
