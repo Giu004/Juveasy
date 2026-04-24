@@ -8,7 +8,7 @@ from urllib.parse import urlparse, urljoin
 
 import aiohttp
 import cloudscraper
-from config import BYPARR_URL, get_proxy_for_url, TRANSPORT_ROUTES, GLOBAL_PROXIES, get_solver_proxy_url
+from config import BYPARR_URL, get_proxy_for_url, TRANSPORT_ROUTES, GLOBAL_PROXIES
 from utils.cookie_cache import CookieCache
 
 logger = logging.getLogger(__name__)
@@ -51,8 +51,7 @@ class DoodStreamExtractor:
         if not proxy_url:
             return None
 
-        normalized_proxy = get_solver_proxy_url(proxy_url) or proxy_url
-        return {"http": normalized_proxy, "https": normalized_proxy}
+        return {"http": proxy_url, "https": proxy_url}
 
     def _extract_pass_path(self, html: str) -> str | None:
         patterns = [
