@@ -1406,6 +1406,7 @@ class HLSProxy:
                 # Cattura e sanifica il proxy per evitare double-encoding (%253A -> %3A)
                 raw_proxy = request.query.get("proxy") or result.get("selected_proxy")
                 if raw_proxy:
+                    # Sanifica e assegna alla variabile che verrà usata dopo
                     selected_proxy = urllib.parse.unquote(raw_proxy)
                     if "://" not in selected_proxy and "%3a" in selected_proxy.lower():
                         selected_proxy = urllib.parse.unquote(selected_proxy)
@@ -2922,6 +2923,7 @@ class HLSProxy:
                         shorten_url_func=self.shorten_hls_url if use_short_hls_urls else None,
                         bypass_warp=bypass_warp,
                         disable_ssl=disable_ssl,
+                        selected_proxy=forced_proxy, # ✅ PASSA IL PROXY FORZATO
                     )
                     return web.Response(text=rewritten, headers={
                         "Content-Type": "application/vnd.apple.mpegurl",
