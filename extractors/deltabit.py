@@ -121,21 +121,11 @@ class DeltabitExtractor:
             logger.debug("🔄 Redirector solved, switching to warp=off for Deltabit")
 
         # 2. Normalize URL to embed format
-        # Normalize URL
+        # Normalize URL (only base domains, no forced /e/)
         if "deltabit.co" in url.lower():
-            if "/e/" not in url.lower():
-                # Assicuriamoci di non perdere l'ID se presente
-                match = re.search(r'deltabit\.co/([a-zA-Z0-9]+)', url)
-                if match:
-                    video_id = match.group(1)
-                    if video_id not in ["login", "registration", "faq", "tos", "contact"]:
-                        url = f"https://deltabit.co/e/{video_id}"
-                else:
-                    url = url.replace("deltabit.co/", "deltabit.co/e/")
+            url = url.replace("deltabit.co/ ", "deltabit.co/")
         
         logger.debug(f"Deltabit: Starting unified FlareSolverr bypass for {url}")
-        url = url.replace("deltabit.bz/", "deltabit.bz/e/")
-        url = url.replace("deltabit.sx/", "deltabit.sx/e/")
         
         parsed_url = urlparse(url)
         domain = parsed_url.netloc
